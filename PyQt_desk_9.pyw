@@ -185,7 +185,7 @@ class _Window_(QMainWindow):
 
 #---------------------------NODE
         
-        self.setStyleSheet('font-size: 15pt; font-family: Inconsolata;')
+        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
         self.label_node = QLabel (self)
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(25,25,25, 95))#<--change label color
         self.label_node.setPalette(self.palette)
@@ -247,7 +247,7 @@ class _Window_(QMainWindow):
 
 #---------------------------disk usage
         
-        self.setStyleSheet('font-size: 15pt; font-family: Inconsolata;')
+        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
         self.text_label_disc = QLabel (self)
         text_label_disc = self.text_label_disc
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(0,0,125, 95))

@@ -5,16 +5,11 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-#from PyQt5.QtMultimedia import *
-#from PyQt5.QtQuick import *
+from PyQt5.QtMultimedia import *
 from PyQt5.uic import *
-#from PyQt5.QtQml import *
-from PyQt5.QtCore import QPoint
-from PyQt5.QtCore import QEvent
 import psutil
 import platform
-
-
+from decimal import *
 
 #-------------------------------------------------
     
@@ -29,6 +24,30 @@ class _Window_(QMainWindow):
     def __init__(self):
         super().__init__()
         print(_Window_.__doc__)
+
+
+        self.net_io = psutil.net_io_counters(pernic=False)
+        print('net_io_counters - ', self.net_io)
+        print()
+        print('bytes sent: ', self.net_io[0])
+        print('bytes recieved: ', self.net_io[1])
+
+        self.disc_io = psutil.disk_io_counters(perdisk=False, nowrap=True)
+        print('disc_io_counters - ', self.disc_io)
+        print()
+        print('byte(s) read: ', self.disc_io[0])
+        print('byte(s) write: ', self.disc_io[1])
+
+        #print(self.net_io("read_count"), self.net_io("write_count"))
+
+#---------------create drop shadow-------------------o
+        
+        self.effect = QGraphicsDropShadowEffect()
+        self.effect.setBlurRadius(10)
+        self.effect.setXOffset(5)
+        self.effect.setYOffset(-5)
+        self.effect.setColor(Qt.black)
+        #self.taskbar_button = QWinTaskbarButton()
 
 
 #-------------------read temps for cpu ------------------
@@ -149,14 +168,15 @@ class _Window_(QMainWindow):
         _label = QLabel  (self)
         self._label = _label
 #--------------
-        self.setStyleSheet('font-size: 18pt; font-family: Cronyx;')
-        self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(125,125,125, 95))#<--change label color
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
+        self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(100,100,100, 95))#<--change label color
         self._label.setPalette(self.palette)
 #--------------        
         _label.setText   ('SYSTEM INFO:')
         #self._label.setWordWrap  (True)
         _label.setGeometry(120,0, 150,105)
-        _label.move(130,-25)
+        self._label.setAlignment (Qt.AlignCenter)
+        _label.move(80,0)
 
 
 
@@ -170,7 +190,7 @@ class _Window_(QMainWindow):
         
 #---------------------------system
         
-        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
         self.label_arch = QLabel (self)
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(25,25,25, 95))#<--change label color
         self.label_arch.setPalette(self.palette)
@@ -178,14 +198,14 @@ class _Window_(QMainWindow):
         self.label_arch.setText      ('architecture:' + str(self.architecture))#<---value from psutil:boot
         #self.label_arch.setWordWrap  (True)#<---------allow more text in label----o
         self.label_arch.setAlignment (Qt.AlignLeft)
-        self.label_arch.move         (20,80)
+        self.label_arch.move         (40,80)
         self.label_arch.adjustSize ()#<-----------adj label size---o
         self.label_arch.raise_()
 
 
 #---------------------------NODE
         
-        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
         self.label_node = QLabel (self)
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(25,25,25, 95))#<--change label color
         self.label_node.setPalette(self.palette)
@@ -199,7 +219,7 @@ class _Window_(QMainWindow):
 
 #---------------------------linux_distribution
         
-        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
         self.label_dist = QLabel (self)
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(25,25,25, 95))#<--change label color
         self.label_dist.setPalette(self.palette)
@@ -214,12 +234,12 @@ class _Window_(QMainWindow):
         
 #---------------------------boot
         
-        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
         self.text_label_boot = QLabel (self)
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(25,25,25, 95))#<--change label color
         self.text_label_boot.setPalette(self.palette)
         
-        self.text_label_boot.setText      (' bootup time: ' + str(self.boottime) + ' seconds')#<---value from psutil:boot
+        self.text_label_boot.setText      (' bootup time: ' + str(round(self.boottime, 1)) + ' seconds')#<---value from psutil:boot
         
         #self.text_label_boot.setWordWrap  (True)#<---------allow more text in label----o
         self.text_label_boot.setAlignment (Qt.AlignLeft)
@@ -227,10 +247,85 @@ class _Window_(QMainWindow):
         self.text_label_boot.adjustSize ()#<-----------adj label size---o
         self.text_label_boot.raise_()
 
+
+
+
+#----------------net io----------------------o
+
+
+        self.net_io = psutil.net_io_counters(pernic=False)
+        print('net_io_counters - ', self.net_io)
+        print()
+        print('bytes sent: ', self.net_io[0])
+        print('bytes recieved: ', self.net_io[1])
+        
+
+
+        #self.net_io[0] = self.net_io[0]/1000000
+        print('self.net_io/1000000  ', self.net_io[0]/1000000)
+        
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
+        self.text_label_net = QLabel (self)
+        self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(102, 0, 204, 95))#<--change label color
+        self.text_label_net.setPalette(self.palette)
+
+
+        
+        getcontext().prec = 1
+        
+        
+        self.text_label_net.setText(' bytes sent/recieved: ' + str(round(self.net_io[0]/1000000, 1)) + 'MB  '
+                                     + str(round(self.net_io[1]/1000000000, 1)) + 'GB')#<---value from psutil:boot
+
+  
+        self.text_label_net.setAlignment (Qt.AlignLeft)
+        self.text_label_net.move         (5,300)
+        self.text_label_net.adjustSize ()#<-----------adj label size---o
+        self.text_label_net.raise_()
+        
+
+
+
+#----------------disc io----------------------o
+
+
+        self.disc_io = psutil.disk_io_counters(perdisk=False, nowrap=True)
+        print('disc_io_counters - ', self.disc_io)
+        print()
+        print('byte(s) read: ', self.disc_io[0])
+        print('byte(s) write: ', self.disc_io[1])
+
+
+
+
+        #self.net_io[0] = self.net_io[0]/1000000
+        print('self.net_io/1000000  ', self.net_io[0]/1000000)
+        
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
+        self.text_label_disc = QLabel (self)
+        self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(102, 51, 0, 85))#<--change label color
+        self.text_label_disc.setPalette(self.palette)
+
+
+        
+        getcontext().prec = 3
+        
+        
+        self.text_label_disc.setText(' bytes read/write: ' + str(round(self.disc_io[2]/1000000000, 3)) + 'GB  '
+                                     + str(round(self.disc_io[3]/1000000000, 3)) + 'GB')#<---value from psutil:boot
+
+  
+        self.text_label_disc.setAlignment (Qt.AlignLeft)
+        self.text_label_disc.move         (5,350)
+        self.text_label_disc.adjustSize ()#<-----------adj label size---o
+        self.text_label_disc.raise_()
+
+
+
        
 #---------------------------cpu temp
         
-        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
         self.text_label_cpu = QLabel (self)
         text_label_cpu = self.text_label_cpu
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(95,25,25, 95))
@@ -247,7 +342,7 @@ class _Window_(QMainWindow):
 
 #---------------------------disk usage
         
-        self.setStyleSheet('font-size: 15pt; font-family: Cronyx;')
+        self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
         self.text_label_disc = QLabel (self)
         text_label_disc = self.text_label_disc
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(0,0,125, 95))
@@ -256,7 +351,7 @@ class _Window_(QMainWindow):
         text_label_disc.setText      ("\r\n" + ' disc usage: ' + str(self.disk) + '%')
         text_label_disc.setWordWrap  (True)
         text_label_disc.setAlignment (Qt.AlignLeft)
-        text_label_disc.move         (80,425)
+        text_label_disc.move         (90,425)
         text_label_disc.adjustSize   ()
         text_label_disc.raise_()
 
@@ -339,21 +434,21 @@ class _Window_(QMainWindow):
     def initGUI(self):
 
         self.setWindowFlags(Qt.FramelessWindowHint # hides the window controls     
-                | Qt.Tool)
+                                | Qt.ToolTip
+                                | Qt.SubWindow)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
                         #position  #size
         self.setGeometry(1560,50, 350,525)#x,y  size,size
-        
-        
-        self.trayIcon = QSystemTrayIcon(QIcon(), self)
-        self.trayIcon.show()        
-        
         self.setWindowTitle('Conky Like Widget')
+        
         self.setVisible(False)
         self.exitOnClose = False
-
         
-
+        self.setGraphicsEffect(self.effect)
+        self.trayIcon = QSystemTrayIcon(QIcon(), self)
+        self.trayIcon.show()
+        
+        self.lower()
         self.show()
 
 

@@ -302,23 +302,23 @@ class _Window_(QMainWindow):
         print('self.net_io/1000000  ', self.net_io[0]/1000000)
         
         self.setStyleSheet('font-size: 15pt; font-family: Ubuntu;')
-        self.text_label_disc = QLabel (self)
+        self.text_label_disc_io = QLabel (self)
         self.pallete = self.palette.setColor(QPalette.Foreground,QColor.fromRgb(102, 51, 0, 85))#<--change label color
-        self.text_label_disc.setPalette(self.palette)
+        self.text_label_disc_io.setPalette(self.palette)
 
 
         
         getcontext().prec = 3
         
         
-        self.text_label_disc.setText(' bytes read/write: ' + str(round(self.disc_io[2]/1000000000, 3)) + 'GB  '
+        self.text_label_disc_io.setText(' bytes read/write: ' + str(round(self.disc_io[2]/1000000000, 3)) + 'GB  '
                                      + str(round(self.disc_io[3]/1000000000, 3)) + 'GB')#<---value from psutil:boot
 
   
-        self.text_label_disc.setAlignment (Qt.AlignLeft)
-        self.text_label_disc.move         (5,350)
-        self.text_label_disc.adjustSize ()#<-----------adj label size---o
-        self.text_label_disc.raise_()
+        self.text_label_disc_io.setAlignment (Qt.AlignLeft)
+        self.text_label_disc_io.move         (5,350)
+        self.text_label_disc_io.adjustSize ()#<-----------adj label size---o
+        self.text_label_disc_io.raise_()
 
 
 
@@ -372,7 +372,9 @@ class _Window_(QMainWindow):
         self.disk = psutil.disk_usage('/')[3]
         self.freq = psutil.cpu_freq(percpu=False)[0]/1000*10
         self.cpu_freq = self.freq / 3.2 * 10
-        
+
+        self.disc_io = psutil.disk_io_counters(perdisk=False)
+        self.net_io = psutil.net_io_counters(pernic=False)
 
 #---------------------boot time----------------------------
                     
@@ -395,16 +397,31 @@ class _Window_(QMainWindow):
             if counter == (0):
                 self.temperatures = entry.current
                 counter += (1)
-##
+
 ##        print('temperatures' , self.temperatures)
 ##        print()  
+
 
 
 #--------------------update labels with info each tick----------
 
         self.text_label_cpu.setText      ("\r\n" + ' CPU temps: ' + str(self.temperatures) + '°C')
         self.text_label_disc.setText      ("\r\n" + ' disc usage: ' + str(self.disk) + '%')
-     
+
+
+
+
+###----------------------------update net label -------------------------o
+##        
+        self.text_label_net.setText(' net sent/recieved: ' + str(round(self.net_io[0]/1000000, 1)) + 'MB  '
+                                     + str(round(self.net_io[1]/1000000000, 1)) + 'GB')#<---value from psutil:boot
+
+
+
+###----------------------------update disc label -------------------------o
+##
+        self.text_label_disc_io.setText(' disk read/write: ' + str(round(self.disc_io[0]/1000, 1)) + 'kB  '
+                                     + str(round(self.disc_io[1]/1000, 1)) + 'kB')#<---value from psutil:boot
 
 
 
